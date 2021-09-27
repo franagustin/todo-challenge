@@ -1,0 +1,14 @@
+name: Run Tests!
+on: [push]
+jobs:
+  Tests:
+    runs-on: ubuntu-latest
+    container: registry.gitlab.com/square-wheel-team/python-images:3.6-3.10
+    steps:
+      - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
+      - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
+      - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
+      - uses: actions/checkout@v2
+      - run: pip3 install poetry
+      - run: poetry run pip install tox
+      - run: poetry run tox

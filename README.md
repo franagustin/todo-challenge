@@ -1,35 +1,136 @@
-# Invera ToDo-List Challenge (Python/Django Jr-SSr)
+# Taskinator
 
-El propósito de esta prueba es conocer tu capacidad para crear una pequeña aplicación funcional en un límite de tiempo. A continuación, encontrarás las funciones, los requisitos y los puntos clave que debés tener en cuenta durante el desarrollo.
+Build a TODO list API for users to schedule their tasks.
 
-## Qué queremos que hagas:
 
-- El Challenge consiste en crear una aplicación web sencilla que permita a los usuarios crear y mantener una lista de tareas.
-- La entrega del resultado será en un nuevo fork de este repo y deberás hacer una pequeña demo del funcionamiento y desarrollo del proyecto ante un super comité de las más grandes mentes maestras de Invera, o a un par de devs, lo que sea más fácil de conseguir.
-- Podes contactarnos en caso que tengas alguna consulta.
+## How to run?
 
-## Objetivos:
+### Installing dependencies
 
-El usuario de la aplicación tiene que ser capaz de:
+**Python version**: 3.6+
+**This project uses [Poetry](https://python-poetry.org/)**. You should [install](https://python-poetry.org/docs/#installation) it as well.
 
-- Crear una tarea
-- Eliminar una tarea
-- Marcar tareas como completadas
-- Poder ver una lista de todas las tareas existentes
-- Filtrar/buscar tareas por fecha de creación y/o por el contenido de la misma
+**Installing python packages (requirements)**
+```
+poetry install
+```
 
-## Qué evaluamos:
+### Migrations
 
-- Desarrollo utilizando Python, Django. No es necesario crear un Front-End, pero sí es necesario tener una API que permita cumplir con los objetivos de arriba.
-- Calidad y arquitectura de código. Facilidad de lectura y mantenimiento del código. Estándares seguidos.
-- [Bonus] Manejo de logs.
-- [Bonus] Creación de tests (unitarias y de integración)
-- [Bonus] Unificar la solución propuesta en una imagen de Docker por repositorio para poder ser ejecutada en cualquier ambiente (si aplica para full stack).
+**Making**
+```
+poetry run python manage.py makemigrations
+```
 
-## Requerimientos de entrega:
+**Running**
+```
+poetry run python manage.py migrate
+```
 
-- Hacer un fork del proyecto y pushearlo en github. Puede ser privado.
-- La solución debe correr correctamente.
-- El Readme debe contener todas las instrucciones para poder levantar la aplicación, en caso de ser necesario, y explicar cómo se usa.
-- Disponibilidad para realizar una pequeña demo del proyecto al finalizar el challenge.
-- Tiempo para la entrega: Aproximadamente 7 días.
+### Development
+
+```
+poetry run python manage.py runserver
+```
+
+### WSGI
+
+```
+poetry add uwsgi
+poetry run uwsgi todo_challenge.wsgi:application
+```
+
+### ASGI
+
+```
+poetry add daphne
+poetry run daphne todo_challenge.asgi:application
+```
+
+
+## How to use? (API Reference)
+
+This API has two main endpoints:
+
+### Task Groups
+
+Located at **/api/task-groups/**. A group basically holds related tasks together so they can be, for example, displayed in a single column by a frontend application.
+
+#### List
+**Path**: /api/task-groups/
+**Method**: GET
+**Parameters**: None
+
+#### Create
+**Path**: /api/task-groups/
+**Method**: POST
+**Parameters**: *Body may be sent either as JSON or multipart form data.*
+    * **name**: (*string*) In Body.
+
+#### View task group in detail
+**Path**: /api/task-groups/{TASK_GROUP_ID}
+**Method**: GET
+**Parameters**: None
+
+#### Update
+**Path**: /api/task-groups/{TASK_GROUP_ID}
+**Method**: PATCH | PUT
+**Parameters**: *Body may be sent either as JSON or multipart form data.*
+    * **name**: (*string*) In Body.
+
+#### Delete
+**Path**: /api/task-groups/{TASK_GROUP_ID}
+**Method**: DELETE
+**Parameters**: None
+
+
+### Tasks
+
+Located at **/api/tasks/**. Represents each single item in the TODO list.
+
+#### List
+**Path**: /api/tasks/
+**Method**: GET
+**Parameters**:
+    * **date**: (*datetime*) Query. Filter a specific creation date.^
+    * **date__lt**: (*datetime*) Query. Filter by creation date less than.
+    * **date__lte**: (*datetime*) Query.  Filter by creation date less than or equal to.
+    * **date__gt**: (*datetime*) Query. Filter by creation date greater than.
+    * **date__gte**: (*datetime*) Query. Filter by creation date greater than or equal to.
+    * **finished**: (*string: true | false*) Query. Display only finished or unfinished tasks.
+    * **search**: (*string*) Query. Display only tasks containing this expression in their name or description.
+
+#### Create
+**Path**: /api/tasks/
+**Method**: POST
+**Parameters**: *Body may be sent either as JSON or multipart form data.*
+    * **name**: (*string*) In Body.
+    * **description**: (*string*) In Body.
+    * **due_date**: (*datetime*) In Body.
+
+#### View task group in detail
+**Path**: /api/task-groups/{TASK_GROUP_ID}
+**Method**: GET
+**Parameters**: None
+
+#### Update
+**Path**: /api/tasks/{TASK_ID}
+**Method**: PATCH | PUT
+**Parameters**: *Body may be sent either as JSON or multipart form data.*
+    * **name**: (*string*) In Body.
+    * **description** (*string*) In Body.
+    * **due_date** (*datetime*) In Body.
+
+#### Delete
+**Path**: /api/tasks/{TASK_ID}
+**Method**: DELETE
+**Parameters**: None
+
+
+### Authentication
+
+All requests to this API should be authenticated by including a Token in the request headers.
+
+```
+Authorization: Token XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+```
