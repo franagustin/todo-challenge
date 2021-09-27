@@ -48,6 +48,17 @@ poetry add daphne
 poetry run daphne todo_challenge.asgi:application
 ```
 
+## Docker
+
+This approach uses daphne and ASGI inside a Docker container.
+
+```
+docker build -t taskinator .
+docker run -p 8000:80 taskinator
+# You may customise the container port as well:
+docker run -p 8000:8000 taskinator -p 8000
+```
+
 
 # How to use? (API Reference)
 
@@ -93,7 +104,7 @@ Located at **/api/tasks/**. Represents each single item in the TODO list.
 * **Path**: /api/tasks/
 * **Method**: GET
 * **Parameters**:
-    * **date**: (*datetime*) Query. Filter a specific creation date.^
+    * **date**: (*datetime*) Query. Filter a specific creation date.
     * **date__lt**: (*datetime*) Query. Filter by creation date less than.
     * **date__lte**: (*datetime*) Query.  Filter by creation date less than or equal to.
     * **date__gt**: (*datetime*) Query. Filter by creation date greater than.
@@ -110,7 +121,7 @@ Located at **/api/tasks/**. Represents each single item in the TODO list.
     * **due_date**: (*datetime*) In Body.
 
 ### View task in detail
-* **Path**: /api/tasks/{TASK_GROUP_ID}
+* **Path**: /api/tasks/{TASK_ID}
 * **Method**: GET
 * **Parameters**: None
 
